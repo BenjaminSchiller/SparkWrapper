@@ -1,2 +1,4 @@
 .vagrant
 *.swp
+metastore_db
+derby.log
