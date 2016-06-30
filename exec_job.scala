@@ -32,6 +32,7 @@ println("*************************************************")
 println("Reading and converting graph into graphframes....")
 println("*************************************************")
 
+var graphFrame:GraphFrame = null;
 
 time {
 	// Reading vertices...
@@ -50,8 +51,7 @@ time {
 	val rowRDD = edges.map(_.split("\\t")).map(p => Row(p(0), p(1).trim))
 	val edgesDataFrame = sqlContext.createDataFrame(rowRDD, schema)
 	
-	val graphFrame = GraphFrame(verticesDataFrame, edgesDataFrame)
-	graphFrame.inDegrees.show
+	graphFrame = GraphFrame(verticesDataFrame, edgesDataFrame)
 }
 
-
+graphFrame.inDegrees.show
