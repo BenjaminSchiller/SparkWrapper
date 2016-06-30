@@ -15,6 +15,7 @@ val paramsArray = paramsSlice.split(",")
 val inputVerticesFilepath = paramsArray(0)
 val inputEdgesFilepath = paramsArray(1)
 val outputFilepath = paramsArray(2)
+val selectedAlgorithm = paramsArray(3)
 
 
 // Helper method to time certain blocks of the code
@@ -59,9 +60,32 @@ time {
 // graphFrame.shortestPaths.landmarks(Array("1","2")).run.show
 // println(graphFrame.toGraphX.subgraph(vpred = (id, attr) => id == 1).vertices.collect.mkString("\n"))
 
+var result:DataFrame=null
+
+if (selectedAlgorithm == "1") {
+	println("Running connected components...");
+	time { result=graphFrame.connectedComponents.run }; 
+
+} else if (selectedAlgorithm == "2") {
+	println("Running vertex degrees...");
+	time { result=graphFrame.degrees }; 
+	// TODO: subgraphing is supported via graphx
+} else if (selectedAlgorithm == "4") {
+	println("Running shortest paths...");
+	// time { graphFrame.shortestPaths.landmarks(Array("1","2")).run }; 
+
+} else if (selectedAlgorithm == "5") {
+	println("Running triangle count...");
+	time { result=graphFrame.triangleCount.run }; 
+
+} else {
+	println("Algorithm not supported!");
+}
+
+
 
 // Write result to output file
-// graphFrame.degrees.repartition(1).rdd.saveAsTextFile(outputFilepath) 
+result.repartition(1).rdd.saveAsTextFile(outputFilepath) 
 
 // Exit to clean local state and memory.
-// exit
+exit
