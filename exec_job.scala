@@ -5,6 +5,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 
 import org.graphframes._
+import org.apache.spark.graphx._
 
 // Paramater parsing via --conf spark.driver.extraJavaOptions="-Darg1,arg2,arg3"
 val sconf = new SparkConf()
@@ -54,4 +55,13 @@ time {
 	graphFrame = GraphFrame(verticesDataFrame, edgesDataFrame)
 }
 
-graphFrame.inDegrees.show
+// Select and run user-selected algorithm
+// graphFrame.shortestPaths.landmarks(Array("1","2")).run.show
+// println(graphFrame.toGraphX.subgraph(vpred = (id, attr) => id == 1).vertices.collect.mkString("\n"))
+
+
+// Write result to output file
+// graphFrame.degrees.repartition(1).rdd.saveAsTextFile(outputFilepath) 
+
+// Exit to clean local state and memory.
+// exit
