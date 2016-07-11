@@ -16,6 +16,7 @@ val inputVerticesFilepath = paramsArray(0)
 val inputEdgesFilepath = paramsArray(1)
 val outputFilepath = paramsArray(2)
 val selectedAlgorithm = paramsArray(3)
+val srcVertextShortestPaths = paramsArray(4)
 
 
 // Helper method to time certain blocks of the code
@@ -72,7 +73,7 @@ if (selectedAlgorithm == "1") {
 	// TODO: subgraphing is supported via graphx
 } else if (selectedAlgorithm == "4") {
 	println("Running shortest paths...");
-	// time { graphFrame.shortestPaths.landmarks(Array("1","2")).run }; 
+	// time { graphFrame.shortestPaths.landmarks(Array(srcVertextShortestPaths)).run }; 
 
 } else if (selectedAlgorithm == "5") {
 	println("Running triangle count...");
