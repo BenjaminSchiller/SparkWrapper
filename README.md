@@ -26,3 +26,11 @@ How to run
 ```bash
 ./run_spark_shell.sh <input_vertices_filepath> <input_edges_filepath> <output_filepath> <algorithm_id> <src_vertex_id_shortest_paths> <num_worker_threads>
 ```
+
+Algorithm Ids
+=============
+* [1] Connected components
+* [2] Vertext degrees
+* [4] Single source shortest paths
+* [5] Triangle count
+
