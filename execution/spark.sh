@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [[ "$#" != "7" ]]; then
-	echo 'expecting 7 arguments:' >&2
-	echo '    flink.sh $datasetCategory $datasetName $states $metric $metricArguments $workers $run' >&2
+if [[ "$#" != "6" ]]; then
+	echo 'expecting 6 arguments:' >&2
+	echo '    flink.sh $dataset $states $metric $metricArguments $workers $run' >&2
 	exit
 fi
 
@@ -16,13 +16,12 @@ function printTime {
 
 source config.cfg
 
-datasetCategory=$1
-datasetName=$2
-states=$3
-metric=$4
-metricArguments=$5
-workers=$6
-run=$7
+dataset=$1
+states=$2
+metric=$3
+metricArguments=$4
+workers=$5
+run=$6
 
 
 
@@ -47,10 +46,10 @@ case $metric in
 	esac
 
 
-datasetDir="${mainDatasetDir}/$datasetCategory/$datasetName"
-runtimesDir="${mainRuntimesDir}/$datasetCategory/$datasetName/$metric--$states--$workers"
-logDir="${mainLogDir}/$datasetCategory/$datasetName/$metric--$states--$workers"
-outputDir="${mainOutputDir}/$datasetCategory/$datasetName/$metric--$states--$workers"
+datasetDir="${mainDatasetDir}/${dataset}"
+runtimesDir="${mainRuntimesDir}/${dataset}/$states/$metric/$workers"
+logDir="${mainLogDir}/${dataset}/$states/$metric/$workers"
+outputDir="${mainOutputDir}/${dataset}/$states/$metric/$workers"
 
 if [[ ! -d $runtimesDir ]]; then mkdir -p $runtimesDir; fi
 if [[ ! -d $logDir ]]; then mkdir -p $logDir; fi
@@ -61,11 +60,11 @@ runtimes="${runtimesDir}/${run}${runtimesSuffix}"
 if [[ -f $runtimes ]]; then echo "$runtimes exists" >&2; exit; fi
 
 for s in $(seq 1 $states); do
-	datasetV="${datasetDir}/${s}${datasetVSuffix}"
-	datasetE="${datasetDir}/${s}${datasetESuffix}"
+	datasetPathV="${datasetDir}/${s}${datasetVSuffix}"
+	datasetPathE="${datasetDir}/${s}${datasetESuffix}"
 
-	if [[ ! -f $datasetV ]]; then echo "$datasetV does not exist" >&2; exit; fi
-	if [[ ! -f $datasetE ]]; then echo "$datasetE does not exist" >&2; exit; fi
+	if [[ ! -f $datasetPathV ]]; then echo "$datasetPathV does not exist" >&2; exit; fi
+	if [[ ! -f $datasetPathE ]]; then echo "$datasetPathE does not exist" >&2; exit; fi
 
 	total_start=$(printTime)
 	if [[ $metric == "sssp" ]]; then
@@ -73,13 +72,13 @@ for s in $(seq 1 $states); do
 			log="${logDir}/${run}-${s}--${vertexId}${logSuffix}"
 			err="${logDir}/${run}-${s}--${vertexId}${errSuffix}"
 			output="${outputDir}/${run}-${s}--${vertexId}${outputSuffix}"
-			echo spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetV},${datasetE},${output},${metricId},${vertexId}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+			spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${vertexId}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
 		done
 	else
 		log="${logDir}/${run}-${s}${logSuffix}"
 		err="${logDir}/${run}-${s}${errSuffix}"
 		output="${outputDir}/${run}-${s}${outputSuffix}"
-		echo spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetV},${datasetE},${output},${metricId},${metricArguments}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+		spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${metricArguments}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
 	fi
 	total_end=$(printTime)
 	duration=$((${total_end} - ${total_start}))
