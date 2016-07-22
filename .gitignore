@@ -7,3 +7,7 @@ execution/datasets
 execution/output
 execution/log
 execution/runtimes
+
+# SBT temporary project dir
+project/
+target/
