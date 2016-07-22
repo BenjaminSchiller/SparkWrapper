@@ -81,7 +81,7 @@ if (selectedAlgorithm == "1") {
  
 } else if (selectedAlgorithm == "4") {
 	println("Running shortest paths...");
-	time { graphFrame.shortestPaths.landmarks(Array(srcVertextShortestPaths)).run }; 
+	time { result = graphFrame.shortestPaths.landmarks(Array(srcVertextShortestPaths)).run }; 
 
 } else if (selectedAlgorithm == "5") {
 	println("Running triangle count...");
