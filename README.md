@@ -11,7 +11,8 @@ Directory structure
 * `input-edges` A sample file for the input edges format. A TSV of node identifiers (type: Long)
 * `input-vertices` A sample file for the input nodes format. A list of node identifiers (type: Long)
 * `exec_job.scala` The source code used to run the graph algorithms
-* `run_spark_shell.sh` A simple bash script to run and execute `exec_job.scala` in spark.
+* `run_spark_shell.sh` [DEVELOPMENT ONLY] A simple bash script to run and execute `exec_job.scala` in spark.
+* `submit_spark_job.sh` [USEME] A simple bash script to submit a spark job to the master server
 
 How to run
 ==========
