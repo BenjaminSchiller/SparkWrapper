@@ -12,4 +12,4 @@
 # --master local[*] Run spark with as many worker threads as logical cores on the machine.
 #
 #
-spark-submit --conf spark.driver.extraJavaOptions="-D$1,$2,$3,$4,$5" --master local[$6] --jars /opt/spark-1.6.2-bin-hadoop2.6/lib/graphframes-0.1.0-spark1.6.jar --class DGARunner /vagrant/target/scala-2.10/dgarunner_2.10-1.0.jar
+spark-submit --conf spark.driver.extraJavaOptions="-D$1,$2,$3,$4,$5" --master local[$6] --jars /opt/spark-1.6.2-bin-hadoop2.6/lib/graphframes-0.1.0-spark1.6.jar --class DGARunner ./target/scala-2.10/dgarunner_2.10-1.0.jar
