@@ -1,4 +1,6 @@
 import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
+import org.apache.spark.SparkContext._;
 import org.apache.spark.sql.types.{StructType,StructField,StringType};
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql._
@@ -7,8 +9,13 @@ import org.apache.spark.sql.functions._
 import org.graphframes._
 import org.apache.spark.graphx._
 
+object DGARunner {
+
+def main(args: Array[String]) {
+
 // Paramater parsing via --conf spark.driver.extraJavaOptions="-Darg1,arg2,arg3"
 val sconf = new SparkConf()
+val sc = new SparkContext(sconf)
 val paramsString = sconf.get("spark.driver.extraJavaOptions")
 val paramsSlice = paramsString.slice(2,paramsString.length)
 val paramsArray = paramsSlice.split(",")
@@ -29,6 +36,7 @@ def time[R](block: => R): R = {
 }
 
 val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+import sqlContext.implicits._
 
 // Reading and loading edges into Dataframes
 println("*************************************************")
@@ -88,5 +96,9 @@ if (selectedAlgorithm == "1") {
 // Write result to output file
 result.repartition(1).rdd.saveAsTextFile(outputFilepath) 
 
+}
+
+}
+
 // Exit to clean local state and memory.
-exit
+//exit
