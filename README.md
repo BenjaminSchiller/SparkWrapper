@@ -15,8 +15,20 @@ Directory structure
 
 How to run
 ==========
+1. First, make sure the spark master is running in the background. You only need to start the master once and then submit as many jobs to it as you want.
 ```bash
-./run_spark_shell.sh <input_vertices_filepath> <input_edges_filepath> <output_filepath> <algorithm_id> <src_vertex_id_shortest_paths> <num_worker_threads>
+# Make sure JAVA_HOME is set first.
+sudo /opt/spark-1.6.2-bin-hadoop2.6/sbin/start-master.sh
+```
+2. Build and package your scala app into a JAR file
+```bash
+sbt package
+```
+Your output JAR should now be in: `target/scala-2.10/dgarunner_2.10-1.0.jar` 
+
+3. Submit your job to the spark master. This step assumes your JAR file resides in the location above in step 2.
+```bash
+./submit_spark_job.sh <input_vertices_filepath> <input_edges_filepath> <output_filepath> <algorithm_id> <src_vertex_id_shortest_paths> <num_worker_threads>
 ```
 
 Algorithm Ids
