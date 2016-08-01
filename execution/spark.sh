@@ -59,7 +59,9 @@ runtimes="${runtimesDir}/${run}${runtimesSuffix}"
 
 if [[ -f $runtimes ]]; then echo "$runtimes exists" >&2; exit; fi
 
-for s in $(seq 1 $states); do
+./start-master.sh
+
+for s in $(seq 0 $((states-1))); do
 	datasetPathV="${datasetDir}/${s}${datasetVSuffix}"
 	datasetPathE="${datasetDir}/${s}${datasetESuffix}"
 
@@ -72,18 +74,34 @@ for s in $(seq 1 $states); do
 			log="${logDir}/${run}-${s}--${vertexId}${logSuffix}"
 			err="${logDir}/${run}-${s}--${vertexId}${errSuffix}"
 			output="${outputDir}/${run}-${s}--${vertexId}${outputSuffix}"
-			spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${vertexId}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+			# spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${vertexId}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+			./submit_spark_job.sh ${datasetPathV} ${datasetPathE} ${output} ${metricId} ${vertexId} ${workers} > >(tee $log) 2> >(tee $err >&2)
 		done
 	else
 		log="${logDir}/${run}-${s}${logSuffix}"
 		err="${logDir}/${run}-${s}${errSuffix}"
 		output="${outputDir}/${run}-${s}${outputSuffix}"
-		spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${metricArguments}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+		# spark-shell -i exec_job.scala --conf spark.driver.extraJavaOptions="-D${datasetPathV},${datasetPathE},${output},${metricId},${metricArguments}" --master local[${workers}] --jars $jarPath > >(tee $log) 2> >(tee $err >&2)
+		./submit_spark_job.sh ${datasetPathV} ${datasetPathE} ${output} ${metricId} ${metricArguments} ${workers} > >(tee $log) 2> >(tee $err >&2)
 	fi
 	total_end=$(printTime)
 	duration=$((${total_end} - ${total_start}))
-	echo "$s	$duration" >> $runtimes
+	ioTime=$(grep "Elapsed time:" $log | head -n1 | sed 's/Elapsed time: //g' | sed 's/ns//g')
+	executionTime=$(grep "Elapsed time:" $log | tail -n1 | sed 's/Elapsed time: //g' | sed 's/ns//g')
+	echo "$s	$duration	$ioTime	$executionTime" >> $runtimes
+	echo "$s	$duration	$ioTime	$executionTime"
 done
-echo "TOTAL	$(awk '{ sum += $2; } END { print sum; }' "$runtimes")" >> $runtimes
+sumA=$(awk '{ sum += $2; } END { print sum; }' "$runtimes")
+sumB=$(awk '{ sum += $3; } END { print sum; }' "$runtimes")
+sumC=$(awk '{ sum += $4; } END { print sum; }' "$runtimes")
+echo "TOTAL	$sumA	$sumB	$sumC" >> $runtimes
+echo "TOTAL	$sumA	$sumB	$sumC"
+
+./stop-master.sh
 
 
+
+
+# Elapsed time: 2337817667ns => IO
+# Running connected components...
+# Elapsed time: 30468120859ns => EXECUTION
