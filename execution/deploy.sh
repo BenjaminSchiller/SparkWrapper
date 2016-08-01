@@ -4,8 +4,10 @@ source jobs.cfg
 
 rsync -auvzl \
 	../install.sh \
-	../exec_job.scala \
-	spark.sh config.cfg \
-	datasets \
+	../submit_spark_job.sh \
+	../start-master.sh ../stop-master.sh \
+	spark.sh sparkTask.sh config.cfg \
+	_jobsRunner.sh \
+	../package.sbt ../src \
 	clean.sh \
 	$server_name:$server_dir/
