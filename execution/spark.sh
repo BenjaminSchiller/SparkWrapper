@@ -57,7 +57,7 @@ if [[ ! -d outputDir ]]; then mkdir -p $outputDir; fi
 
 runtimes="${runtimesDir}/${run}${runtimesSuffix}"
 
-if [[ -f $runtimes ]]; then echo "$runtimes exists" >&2; exit; fi
+if [[ -f $runtimes ]]; then echo "$runtimes exists"; exit; fi
 
 ./start-master.sh
 

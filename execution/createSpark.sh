@@ -11,16 +11,14 @@ function sparkJob {
 }
 
 dataset="Undirected__-/Random__100_500/RandomEdgeExchange__10_99999999/0__99"
-states="100"
+states="20"
 
-workerss=(1 2 4 8 16 32)
-runs=(1 2 3)
-
-workerss=(4 8)
-runs=(1 2)
+workerss=(1 2 4 8)
+workerss=(1 2 3 4 5 6 7 8)
+runs=(1)
 
 for run in ${runs[@]}; do
 	for workers in ${workerss[@]}; do
-		sparkJob $dataset $states dd 0 $workers $runs
+		sparkJob $dataset $states tc 0 $workers $run
 	done
 done
