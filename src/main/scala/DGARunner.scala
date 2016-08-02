@@ -94,7 +94,7 @@ if (selectedAlgorithm == "1") {
 
 
 // Write result to output file
-result.repartition(1).rdd.saveAsTextFile(outputFilepath) 
+result.rdd.saveAsTextFile(outputFilepath) 
 
 }
 
